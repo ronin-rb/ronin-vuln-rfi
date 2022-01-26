@@ -1,6 +1,6 @@
 #
 # ronin-vuln-rfi - A small Ruby library for testing Remote File Inclusion (RFI)
-# vulnerabilities
+# vulnerabilities.
 #
 # Copyright (c) 2007-2022 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
@@ -18,5 +18,4 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/php/rfi/extensions'
-require 'ronin/php/rfi/rfi'
+require 'ronin/vuln/rfi/extensions/uri'

@@ -18,16 +18,16 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/php/rfi/rfi'
+require 'ronin/vuln/rfi/rfi'
 
 module URI
   class HTTP < Generic
 
     #
-    # @see Ronin::PHP::LFI.scan
+    # @see Ronin::Vuln::LFI.scan
     #
     def rfi_scan(options={})
-      Ronin::PHP::RFI.scan(self,options)
+      Ronin::Vuln::RFI.scan(self,options)
     end
 
     #
@@ -36,7 +36,7 @@ module URI
     # @param [Hash] options
     #   Additional options.
     #
-    # @return [Ronin::PHP::RFI, nil]
+    # @return [Ronin::Vuln::RFI, nil]
     #   The first RFI vulnerability discovered.
     #
     def first_rfi(options={})

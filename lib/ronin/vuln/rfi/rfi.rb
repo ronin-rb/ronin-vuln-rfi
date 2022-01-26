@@ -25,7 +25,7 @@ require 'uri/query_params'
 require 'digest/md5'
 
 module Ronin
-  module PHP
+  module Vuln
     class RFI
 
       # Default URL of the RFI Test script
