@@ -1,6 +1,6 @@
 #
-# Ronin PHP - A Ruby library for Ronin that provides support for PHP
-# related security tasks.
+# ronin-vuln-rfi - A small Ruby library for testing Remote File Inclusion (RFI)
+# vulnerabilities
 #
 # Copyright (c) 2007-2010 Hal Brodigan (postmodern.mod3 at gmail.com)
 #
