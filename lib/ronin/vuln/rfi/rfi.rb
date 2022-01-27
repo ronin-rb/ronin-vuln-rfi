@@ -86,8 +86,6 @@ module Ronin
       # @return [String]
       #   The URL to the RFI testing script.
       #
-      # @since 0.1.4
-      #
       def self.test_script
         @@ronin_rfi_test_script ||= TEST_SCRIPT
       end
@@ -100,8 +98,6 @@ module Ronin
       #
       # @return [String]
       #   The new URL to the RFI testing script.
-      #
-      # @since 0.1.4
       #
       def self.test_script=(new_url)
         @@ronin_rfi_test_script = new_url
@@ -124,8 +120,6 @@ module Ronin
       #
       # @return [Enumerator]
       #   If no block is given, an enumerator object will be returned.
-      #
-      # @since 0.2.0
       #
       def self.test(url,**kwargs)
         return enum_for(:scan,url,options) unless block_given?
