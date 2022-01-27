@@ -54,27 +54,18 @@ module Ronin
       # @param [String, Symbol] param
       #   The query parameter to attempt RFI on.
       #
-      # @param [Hash] options
-      #   Additional options.
+      # @param [Boolean] terminate
+      #   Specifies whether to terminate the RFI script URL with a `?`.
       #
-      # @option options [Boolean] :terminate (true)
-      #   Specifies whether to terminate the RFI script URL
-      #   with a `?`.
-      #
-      # @option options [String, URI::HTTP] :test_script (RFI.test_script)
+      # @param [String, URI::HTTP] test_script
       #   The URL of the RFI test script.
       #
-      def initialize(url,param,options={})
+      def initialize(url,param, test_script: self.test_script, terminate: true)
         @url   = url
         @param = param
 
-        if options.has_key?(:terminate)
-          @terminate = options[:terminate]
-        else
-          @terminate = true
-        end
-
-        @test_script = (options[:test_script] || self.test_script)
+        @test_script = test_script
+        @terminate   = terminate
       end
 
       #
@@ -110,8 +101,8 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The URL to scan.
       #
-      # @param [Hash] options
-      #   Additional options.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments.
       #
       # @yield [rfi]
       #   The given block will be passed each discovered RFI vulnerability.
@@ -124,7 +115,7 @@ module Ronin
       #
       # @since 0.2.0
       #
-      def self.scan(url,options={})
+      def self.scan(url,**kwargs)
         return enum_for(:scan,url,options) unless block_given?
 
         url = URI(url)
@@ -132,7 +123,7 @@ module Ronin
         url.query_params.each_key do |param|
           rfi = self.new(url,param)
 
-          yield rfi if rfi.vulnerable?(options)
+          yield rfi if rfi.vulnerable?(**kwargs)
         end
       end
 
@@ -173,12 +164,8 @@ module Ronin
       # @param [String, URI::HTTP] script
       #   The URL of the PHP script to include remotely.
       #
-      # @param [Hash] options
-      #   Additional HTTP options.
-      #
-      # @option options [Symbol] :method (:get)
-      #   The HTTP method to perform the Remote File Inclusion.
-      #   Maybe be either `:get` or `:post`.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for `http_request`.
       #
       # @return [String]
       #   The body of the response from the RFI.
@@ -186,9 +173,8 @@ module Ronin
       # @see Net.http_post_body
       # @see Net.http_get_body
       #
-      def include(script,options={})
-        options  = options.merge(:url => url_for(script))
-        response = Net.http_request(options)
+      def include(script,**kwargs)
+        response = Net.http_request(url: url_for(script), **kwargs)
 
         return response.body
       end
@@ -196,11 +182,13 @@ module Ronin
       #
       # Tests whether the URL and query parameter are vulnerable to RFI.
       #
-      # @return [Boolean]
-      #   Specifies whether the URL and query parameter are vulnerable
-      #   to RFI.
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for {#include}.
       #
-      def vulnerable?(options={})
+      # @return [Boolean]
+      #   Specifies whether the URL and query parameter are vulnerable to RFI.
+      #
+      def vulnerable?(**kwargs)
         response = include(@test_script,options)
 
         return response.include?(VULN_RESPONSE_STRING)
