@@ -120,7 +120,7 @@ module Ronin
       #   Additional keyword arguments.
       #
       # @return [RFI, nil]
-      #   A discovered RFI vulnerability.
+      #   The first discovered RFI vulnerability.
       #
       def self.test(url, param: nil, evasion: nil, **kwargs)
         url = URI(url)
@@ -142,6 +142,37 @@ module Ronin
         end
 
         return nil
+      end
+
+      #
+      # Tests all query parameters in the URL for RFI vulnerabilities.
+      #
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for {test}.
+      #
+      # @yield [rfi]
+      #   If a block is given, it will be passed each newly discovered RFI
+      #   vulnerability.
+      #
+      # @yieldparam [RFI] rfi
+      #   A newly discoverd RFI vulnerability in one of the URL's query
+      #   parameters.
+      #
+      # @return [Array<RFI>]
+      #   All discovered RFI vulnerabilities.
+      #
+      def self.test_all(url, **kwargs)
+        url   = URI(url)
+        vulns = []
+
+        url.query_params.each_key do |param|
+          if (vuln = test(url, param: param, **kwargs)
+            yield vuln if block_given?
+            vulns << vuln
+          end
+        end
+
+        return vulns
       end
 
       #
