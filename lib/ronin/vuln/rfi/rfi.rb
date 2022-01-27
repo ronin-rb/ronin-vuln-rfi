@@ -85,7 +85,7 @@ module Ronin
       #
       # @since 0.1.4
       #
-      def RFI.test_script
+      def self.test_script
         @@ronin_rfi_test_script ||= TEST_SCRIPT
       end
 
@@ -100,7 +100,7 @@ module Ronin
       #
       # @since 0.1.4
       #
-      def RFI.test_script=(new_url)
+      def self.test_script=(new_url)
         @@ronin_rfi_test_script = new_url
       end
 
@@ -124,7 +124,7 @@ module Ronin
       #
       # @since 0.2.0
       #
-      def RFI.scan(url,options={})
+      def self.scan(url,options={})
         return enum_for(:scan,url,options) unless block_given?
 
         url = URI(url.to_s) unless url.kind_of?(URI)
