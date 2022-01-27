@@ -26,18 +26,19 @@ module Ronin
   module Vuln
     class RFI
 
-      # Default URL of the RFI Test script
+      # Default URL of the Remote File Inclusion (RFI) Test script.
       TEST_SCRIPT = 'https://raw.githubusercontent.com/ronin-rb/ronin-vuln-rfi/main/data/test.php'
 
-      # The string that will be returned if the RFI script is executed
+      # The string that will be returned if the Remote File Inclusion (RFI)
+      # script is executed.
       VULN_RESPONSE_STRING = "Remote File Inclusion (RFI) Detected: eval(\"1 + 1\") = 2"
 
-      # RFI vulnerable url
+      # The url to test or was found to be vulnerable.
       #
       # @return [String, URI::HTTP]
       attr_reader :url
 
-      # RFI vulnerable query parameter 
+      # The query parameter to test or was found to be vulnerable.
       #
       # @return [String, Symbol]
       attr_reader :param
@@ -47,13 +48,13 @@ module Ronin
       # @return [nil, :null_byte, :double_encode]
       attr_reader :evasion
 
-      # URL of the RFI Test script
+      # URL of the Remote File Inclusion (RFI) Test script
       # 
       # @return [String, URI::HTTP]
       attr_accessor :test_script
 
       #
-      # Creates a new RFI object.
+      # Creates a new Remote File Inclusion (RFI) object.
       #
       # @param [String, URI::HTTP] url
       #   The URL to attempt to exploit.
@@ -80,7 +81,7 @@ module Ronin
       end
 
       #
-      # Specifies the URL to the RFI testing script.
+      # Specifies the URL to the Remote File Inclusion (RFI) testing script.
       #
       # @return [String]
       #   The URL to the RFI testing script.
@@ -90,7 +91,7 @@ module Ronin
       end
 
       #
-      # Uses a new URL for the RFI testing script.
+      # Uses a new URL for the Remote File Inclusion (RFI) testing script.
       #
       # @param [String] new_url
       #   The new URL to the RFI testing script.
@@ -103,7 +104,7 @@ module Ronin
       end
 
       #
-      # Scans the URL for RFI vulnerabilities.
+      # Scans the URL for Remote File Inclusion (RFI) vulnerabilities.
       #
       # @param [URI::HTTP, String] url
       #   The URL to scan.
@@ -145,7 +146,8 @@ module Ronin
       end
 
       #
-      # Tests all query parameters in the URL for RFI vulnerabilities.
+      # Tests all query parameters in the URL for Remote File Inclusion (RFI)
+      # vulnerabilities.
       #
       # @param [Hash{Symbol => Object}] kwargs
       #   Additional keyword arguments for {test}.
@@ -190,7 +192,7 @@ module Ronin
       end
 
       #
-      # Builds a RFI URL.
+      # Builds a Remote File Inclusion (RFI) URL.
       #
       # @param [String, URI::HTTP] script_url
       #   The URL of the PHP script to include remotely.
@@ -220,7 +222,7 @@ module Ronin
       end
 
       #
-      # Performs a Remote File Inclusion.
+      # Performs a Remote File Inclusion (RFI).
       #
       # @param [String, URI::HTTP] script
       #   The URL of the PHP script to include remotely.
@@ -241,7 +243,8 @@ module Ronin
       end
 
       #
-      # Tests whether the URL and query parameter are vulnerable to RFI.
+      # Tests whether the URL and query parameter are vulnerable to Remote File
+      # Inclusion (RFI).
       #
       # @param [Hash{Symbol => Object}] kwargs
       #   Additional keyword arguments for {#include}.
