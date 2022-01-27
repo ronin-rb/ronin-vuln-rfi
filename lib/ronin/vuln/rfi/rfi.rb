@@ -28,7 +28,7 @@ module Ronin
     class RFI
 
       # Default URL of the RFI Test script
-      TEST_SCRIPT = 'http://ronin.rubyforge.org/static/ronin/php/rfi/test.php'
+      TEST_SCRIPT = 'https://raw.githubusercontent.com/ronin-rb/ronin-vuln-rfi/main/data/ronin/php/rfi/test.php'
 
       # Prefix text that will appear before the random RFI challenge string
       CHALLENGE_PREFIX = 'PHP RFI Response: '
