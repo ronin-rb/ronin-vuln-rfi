@@ -21,7 +21,6 @@
 require 'ronin/support/network/http'
 
 require 'uri/query_params'
-require 'digest/md5'
 
 module Ronin
   module Vuln
