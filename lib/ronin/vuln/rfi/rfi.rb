@@ -125,10 +125,14 @@ module Ronin
 
         url = URI(url)
 
-        url.query_params.each_key do |param|
-          rfi = self.new(url,param)
+        evasions = [nil, :null_byte, :double_encode]
 
-          yield rfi if rfi.vulnerable?(**kwargs)
+        url.query_params.each_key do |param|
+          evasions.each do |evasion|
+            rfi = self.new(url,param, evasion: evasion)
+
+            yield rfi if rfi.vulnerable?(**kwargs)
+          end
         end
       end
 
