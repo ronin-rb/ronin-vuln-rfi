@@ -39,8 +39,8 @@ module Ronin
       # RFI vulnerable query parameter 
       attr_reader :param
 
-      # Whether to terminate the RFI script url with a null byte
-      attr_accessor :terminate
+      # Whether to null_byte the RFI script url with a null byte
+      attr_accessor :null_byte
 
       # URL of the RFI Test script
       attr_accessor :test_script
@@ -54,18 +54,18 @@ module Ronin
       # @param [String, Symbol] param
       #   The query parameter to attempt RFI on.
       #
-      # @param [Boolean] terminate
-      #   Specifies whether to terminate the RFI script URL with a `?`.
+      # @param [Boolean] null_byte
+      #   Specifies whether to null_byte the RFI script URL with a `?`.
       #
       # @param [String, URI::HTTP] test_script
       #   The URL of the RFI test script.
       #
-      def initialize(url,param, test_script: self.test_script, terminate: true)
+      def initialize(url,param, test_script: self.test_script, null_byte: true)
         @url   = url
         @param = param
 
         @test_script = test_script
-        @terminate   = terminate
+        @null_byte   = null_byte
       end
 
       #
@@ -129,11 +129,11 @@ module Ronin
 
       #
       # @return [Boolean]
-      #   Specifies whether the RFI script URL will be terminated with
+      #   Specifies whether the RFI script URL will be null_byted with
       #   a `?`.
       #
-      def terminate?
-        @terminate == true
+      def null_byte?
+        @null_byte == true
       end
 
       #
@@ -152,7 +152,9 @@ module Ronin
         new_url.query_params.merge!(script_url.query_params)
         script_url.query_params.clear
 
-        script_url = "#{script_url}?" if terminate?
+        # Optionally append a null-byte
+        # NOTE: uri-query_params will automatically URI encode the null byte
+        script_url = "#{script_url}\0" if null_byte?
 
         new_url.query_params[@param.to_s] = script_url
         return new_url
