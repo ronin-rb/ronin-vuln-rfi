@@ -18,7 +18,7 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/network/http'
+require 'ronin/support/network/http'
 require 'ronin/web/spider'
 
 require 'uri/query_params'
