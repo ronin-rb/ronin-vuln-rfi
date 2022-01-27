@@ -39,8 +39,10 @@ module Ronin
       # RFI vulnerable query parameter 
       attr_reader :param
 
-      # Whether to null_byte the RFI script url with a null byte
-      attr_accessor :null_byte
+      # The evasion technique to use.
+      #
+      # @return [nil, :null_byte]
+      attr_reader :evasion
 
       # URL of the RFI Test script
       attr_accessor :test_script
@@ -54,18 +56,20 @@ module Ronin
       # @param [String, Symbol] param
       #   The query parameter to attempt RFI on.
       #
-      # @param [Boolean] null_byte
-      #   Specifies whether to null_byte the RFI script URL with a `?`.
+      # @param [nil, :null_byte] evasion
+      #   Specifies which evasion technique to use.
+      #   * `:null_byte` will cause the inclusion URL to be appended with a
+      #     `%00` character.
       #
       # @param [String, URI::HTTP] test_script
       #   The URL of the RFI test script.
       #
-      def initialize(url,param, test_script: self.test_script, null_byte: true)
+      def initialize(url,param, test_script: self.test_script, evasion: nil)
         @url   = url
         @param = param
 
         @test_script = test_script
-        @null_byte   = null_byte
+        @evasion     = evasion
       end
 
       #
@@ -128,15 +132,6 @@ module Ronin
       end
 
       #
-      # @return [Boolean]
-      #   Specifies whether the RFI script URL will be null_byted with
-      #   a `?`.
-      #
-      def null_byte?
-        @null_byte == true
-      end
-
-      #
       # Builds a RFI URL.
       #
       # @param [String, URI::HTTP] script_url
@@ -152,9 +147,12 @@ module Ronin
         new_url.query_params.merge!(script_url.query_params)
         script_url.query_params.clear
 
-        # Optionally append a null-byte
-        # NOTE: uri-query_params will automatically URI encode the null byte
-        script_url = "#{script_url}\0" if null_byte?
+        case @evasion
+        when :null_byte
+          # Optionally append a null-byte
+          # NOTE: uri-query_params will automatically URI encode the null byte
+          script_url = "#{script_url}\0"
+        end
 
         new_url.query_params[@param.to_s] = script_url
         return new_url
