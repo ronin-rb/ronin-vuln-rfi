@@ -109,7 +109,7 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The URL to scan.
       #
-      # @param [String, Symbol] param
+      # @param [String, Symbol, nil] param
       #   Optional query parameter to test specifically.
       #   Defaults to testing all query parameters in the URL.
       #
@@ -126,7 +126,7 @@ module Ronin
       def self.test(url, param: nil, evasion: nil, **kwargs)
         url = URI(url)
 
-        params = if param then [param]
+        params = if param then [param.to_s]
                  else          url.query_params.key
                  end
 
