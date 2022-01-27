@@ -18,5 +18,5 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/vuln/rfi/extensions'
+require 'ronin/vuln/rfi/core_ext'
 require 'ronin/vuln/rfi/rfi'
