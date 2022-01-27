@@ -41,7 +41,7 @@ module Ronin
 
       # The evasion technique to use.
       #
-      # @return [nil, :null_byte]
+      # @return [nil, :null_byte, :double_encode]
       attr_reader :evasion
 
       # URL of the RFI Test script
@@ -60,6 +60,8 @@ module Ronin
       #   Specifies which evasion technique to use.
       #   * `:null_byte` will cause the inclusion URL to be appended with a
       #     `%00` character.
+      #   * `:double_encode` will cause the inclusion URL to be URI escaped
+      #     twice.
       #
       # @param [String, URI::HTTP] test_script
       #   The URL of the RFI test script.
@@ -119,7 +121,7 @@ module Ronin
       #
       # @since 0.2.0
       #
-      def self.scan(url,**kwargs)
+      def self.test(url,**kwargs)
         return enum_for(:scan,url,options) unless block_given?
 
         url = URI(url)
@@ -152,6 +154,9 @@ module Ronin
           # Optionally append a null-byte
           # NOTE: uri-query_params will automatically URI encode the null byte
           script_url = "#{script_url}\0"
+        when :double_encode
+          # Optionally double URI encodes the script URL
+          script_url = URI.encode_www_form_component(script_url.to_s)
         end
 
         new_url.query_params[@param.to_s] = script_url

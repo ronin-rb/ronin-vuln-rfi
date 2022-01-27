@@ -27,7 +27,7 @@ module URI
     # @see Ronin::Vuln::LFI.scan
     #
     def rfi_scan(options={})
-      Ronin::Vuln::RFI.scan(self,options)
+      Ronin::Vuln::RFI.test(self,options)
     end
 
     #
