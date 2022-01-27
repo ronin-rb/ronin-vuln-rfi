@@ -127,7 +127,7 @@ module Ronin
       def self.scan(url,options={})
         return enum_for(:scan,url,options) unless block_given?
 
-        url = URI(url.to_s) unless url.kind_of?(URI)
+        url = URI(url)
 
         url.query_params.each_key do |param|
           rfi = RFI.new(url,param)
@@ -155,8 +155,8 @@ module Ronin
       #   The URL to use to trigger the RFI.
       #
       def url_for(script_url)
-        script_url = URI(script_url.to_s)
-        new_url = URI(@url.to_s)
+        script_url = URI(script_url)
+        new_url = URI(@url)
 
         new_url.query_params.merge!(script_url.query_params)
         script_url.query_params.clear
