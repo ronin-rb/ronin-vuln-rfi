@@ -39,7 +39,7 @@ module Ronin
 
       # RFI vulnerable query parameter 
       #
-      # @param [String, Symbol]
+      # @return [String, Symbol]
       attr_reader :param
 
       # The evasion technique to use.
