@@ -176,6 +176,20 @@ module Ronin
       end
 
       #
+      # @see test
+      #
+      def self.find(url, **kwargs)
+        test(url, **kwargs)
+      end
+
+      #
+      # @see test_all
+      #
+      def self.find_all(url, **kwargs)
+        test_all(url, **kwargs)
+      end
+
+      #
       # Builds a RFI URL.
       #
       # @param [String, URI::HTTP] script_url
