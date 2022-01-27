@@ -34,9 +34,13 @@ module Ronin
       VULN_RESPONSE_STRING = "Remote File Inclusion (RFI) Detected: eval(\"1 + 1\") = 2"
 
       # RFI vulnerable url
+      #
+      # @return [String, URI::HTTP]
       attr_reader :url
 
       # RFI vulnerable query parameter 
+      #
+      # @param [String, Symbol]
       attr_reader :param
 
       # The evasion technique to use.
@@ -45,6 +49,8 @@ module Ronin
       attr_reader :evasion
 
       # URL of the RFI Test script
+      # 
+      # @return [String, URI::HTTP]
       attr_accessor :test_script
 
       #
