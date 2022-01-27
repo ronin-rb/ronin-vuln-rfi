@@ -111,14 +111,8 @@ module Ronin
       # @param [Hash{Symbol => Object}] kwargs
       #   Additional keyword arguments.
       #
-      # @yield [rfi]
-      #   The given block will be passed each discovered RFI vulnerability.
-      #
-      # @yieldparam [RFI] rfi
+      # @return [RFI, nil]
       #   A discovered RFI vulnerability.
-      #
-      # @return [Enumerator]
-      #   If no block is given, an enumerator object will be returned.
       #
       def self.test(url,**kwargs)
         return enum_for(:scan,url,options) unless block_given?
@@ -131,9 +125,11 @@ module Ronin
           evasions.each do |evasion|
             rfi = self.new(url,param, evasion: evasion)
 
-            yield rfi if rfi.vulnerable?(**kwargs)
+            return rfi if rfi.vulnerable?(**kwargs)
           end
         end
+
+        return nil
       end
 
       #
