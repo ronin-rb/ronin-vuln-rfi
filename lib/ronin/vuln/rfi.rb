@@ -183,7 +183,7 @@ module Ronin
       end
 
       #
-      # @see test_all
+      # @see test_all_params
       #
       def self.find_all(url, **kwargs)
         test_all_params(url, **kwargs)
