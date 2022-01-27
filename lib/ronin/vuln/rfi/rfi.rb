@@ -19,7 +19,6 @@
 #
 
 require 'ronin/support/network/http'
-require 'ronin/web/spider'
 
 require 'uri/query_params'
 require 'digest/md5'
