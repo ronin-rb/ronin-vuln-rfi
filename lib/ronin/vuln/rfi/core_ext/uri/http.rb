@@ -18,7 +18,7 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/vuln/rfi/rfi'
+require 'ronin/vuln/rfi'
 
 module URI
   class HTTP < Generic
