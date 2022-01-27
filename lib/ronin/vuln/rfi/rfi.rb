@@ -187,13 +187,10 @@ module Ronin
       # @see Net.http_get_body
       #
       def include(script,options={})
-        options = options.merge(:url => url_for(script))
+        options  = options.merge(:url => url_for(script))
+        response = Net.http_request(options)
 
-        if options[:method] == :post
-          return Net.http_post_body(options)
-        else
-          return Net.http_get_body(options)
-        end
+        return response.body
       end
 
       #
