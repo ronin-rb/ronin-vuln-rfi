@@ -86,7 +86,7 @@ module Ronin
       #   The URL to the RFI testing script.
       #
       def self.test_script
-        @@ronin_rfi_test_script ||= TEST_SCRIPT
+        @test_script ||= TEST_SCRIPT
       end
 
       #
@@ -99,7 +99,7 @@ module Ronin
       #   The new URL to the RFI testing script.
       #
       def self.test_script=(new_url)
-        @@ronin_rfi_test_script = new_url
+        @test_script = new_url
       end
 
       #
