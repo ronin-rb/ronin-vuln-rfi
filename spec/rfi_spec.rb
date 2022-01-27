@@ -6,7 +6,7 @@ describe Ronin::Vuln::RFI do
     subject { described_class::TEST_SCRIPT }
 
     it "must be a publically accessible URL", :network do
-      response = Net::HTTP.get(URI(subject))
+      response = Net::HTTP.get_response(URI(subject))
 
       expect(response.code.to_i).to eq(200)
       expect(response.body).to_not be_empty
