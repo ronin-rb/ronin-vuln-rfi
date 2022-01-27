@@ -123,8 +123,6 @@ module Ronin
       #   A discovered RFI vulnerability.
       #
       def self.test(url, param: nil, evasion: nil, **kwargs)
-        return enum_for(:scan,url,options) unless block_given?
-
         url = URI(url)
 
         params = if param then [param]
