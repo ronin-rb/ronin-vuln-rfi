@@ -108,20 +108,34 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The URL to scan.
       #
+      # @param [String, Symbol] param
+      #   Optional query parameter to test specifically.
+      #   Defaults to testing all query parameters in the URL.
+      #
+      # @param [nil, :null_byte, :double_encode] evasion
+      #   Optional evasion technic to specifically use.
+      #   Defaults to testing all evasion techniques.
+      #
       # @param [Hash{Symbol => Object}] kwargs
       #   Additional keyword arguments.
       #
       # @return [RFI, nil]
       #   A discovered RFI vulnerability.
       #
-      def self.test(url,**kwargs)
+      def self.test(url, param: nil, evasion: nil, **kwargs)
         return enum_for(:scan,url,options) unless block_given?
 
         url = URI(url)
 
-        evasions = [nil, :null_byte, :double_encode]
+        params = if param then [param]
+                 else          url.query_params.key
+                 end
 
-        url.query_params.each_key do |param|
+        evasions = if evasion then [evasion]
+                   else            [nil, :null_byte, :double_encode]
+                   end
+
+        params.each do |param|
           evasions.each do |evasion|
             rfi = self.new(url,param, evasion: evasion)
 
