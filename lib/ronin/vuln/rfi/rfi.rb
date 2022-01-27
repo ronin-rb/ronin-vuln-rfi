@@ -30,8 +30,8 @@ module Ronin
       # Default URL of the RFI Test script
       TEST_SCRIPT = 'https://raw.githubusercontent.com/ronin-rb/ronin-vuln-rfi/main/data/test.php'
 
-      # Prefix text that will appear before the random RFI challenge string
-      CHALLENGE_PREFIX = 'PHP RFI Response: '
+      # The string that will be returned if the RFI script is executed
+      VULN_RESPONSE_STRING = "Remote File Inclusion (RFI) Detected: eval(\"1 + 1\") = 2"
 
       # RFI vulnerable url
       attr_reader :url
@@ -204,13 +204,9 @@ module Ronin
       #   to RFI.
       #
       def vulnerable?(options={})
-        challenge = Digest::MD5.hexdigest((rand(1000) + 1000).to_s)
+        response = include(@test_script,options)
 
-        test_url = URI(@test_script.to_s)
-        test_url.query_params['rfi_challenge'] = challenge
-
-        response = include(test_url,options)
-        return response.include?("#{CHALLENGE_PREFIX}#{challenge}")
+        return response.include?(VULN_RESPONSE_STRING)
       end
 
     end
