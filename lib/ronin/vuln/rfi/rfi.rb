@@ -65,7 +65,7 @@ module Ronin
       #   The URL of the RFI test script.
       #
       def initialize(url,param,options={})
-        @url = url
+        @url   = url
         @param = param
 
         if options.has_key?(:terminate)
@@ -156,7 +156,7 @@ module Ronin
       #
       def url_for(script_url)
         script_url = URI(script_url)
-        new_url = URI(@url)
+        new_url    = URI(@url)
 
         new_url.query_params.merge!(script_url.query_params)
         script_url.query_params.clear
