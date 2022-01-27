@@ -134,8 +134,8 @@ module Ronin
                    else            [nil, :null_byte, :double_encode]
                    end
 
-        params.each do |param|
-          evasions.each do |evasion|
+        evasions.each do |evasion|
+          params.each do |param|
             rfi = self.new(url,param, evasion: evasion)
 
             return rfi if rfi.vulnerable?(**kwargs)
