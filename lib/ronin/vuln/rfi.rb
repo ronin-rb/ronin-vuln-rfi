@@ -161,7 +161,7 @@ module Ronin
       # @return [Array<RFI>]
       #   All discovered RFI vulnerabilities.
       #
-      def self.test_all(url, **kwargs)
+      def self.test_all_params(url, **kwargs)
         url   = URI(url)
         vulns = []
 
@@ -186,7 +186,7 @@ module Ronin
       # @see test_all
       #
       def self.find_all(url, **kwargs)
-        test_all(url, **kwargs)
+        test_all_params(url, **kwargs)
       end
 
       #
