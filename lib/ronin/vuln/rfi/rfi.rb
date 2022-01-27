@@ -74,7 +74,7 @@ module Ronin
           @terminate = true
         end
 
-        @test_script = (options[:test_script] || RFI.test_script)
+        @test_script = (options[:test_script] || self.test_script)
       end
 
       #
@@ -130,7 +130,7 @@ module Ronin
         url = URI(url)
 
         url.query_params.each_key do |param|
-          rfi = RFI.new(url,param)
+          rfi = self.new(url,param)
 
           yield rfi if rfi.vulnerable?(options)
         end
