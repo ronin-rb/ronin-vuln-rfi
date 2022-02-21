@@ -73,13 +73,18 @@ module Ronin
       # @param [String, URI::HTTP] test_script
       #   The URL of the RFI test script.
       #
+      # @param [Net::HTTP, #get, nil] http
+      #   An HTTP session to use for testing the RFI.
+      #
       def initialize(url,param, test_script: self.class.test_script,
-                                evasion:     nil)
+                                evasion:     nil,
+                                http:        nil)
         @url   = URI(url)
         @param = param.to_s
 
         @test_script = test_script
         @evasion     = evasion
+        @http        = http
       end
 
       #
@@ -120,7 +125,7 @@ module Ronin
       #   Defaults to testing all evasion techniques.
       #
       # @param [Hash{Symbol => Object}] kwargs
-      #   Additional keyword arguments.
+      #   Additional keyword arguments for {#initialize}.
       #
       # @return [RFI, nil]
       #   The first discovered RFI vulnerability.
@@ -138,9 +143,9 @@ module Ronin
 
         evasions.each do |evasion|
           params.each do |param|
-            rfi = self.new(url,param, evasion: evasion)
+            rfi = self.new(url,param, evasion: evasion, **kwargs)
 
-            return rfi if rfi.vulnerable?(**kwargs)
+            return rfi if rfi.vulnerable?
           end
         end
 
@@ -235,9 +240,7 @@ module Ronin
       #   The body of the response from the RFI.
       #
       def include(script)
-        response = Net::HTTP.get_response(url_for(script))
-
-        return response.body
+        request(url_for(script)).body
       end
 
       #
@@ -250,10 +253,29 @@ module Ronin
       # @return [Boolean]
       #   Specifies whether the URL and query parameter are vulnerable to RFI.
       #
-      def vulnerable?(**kwargs)
-        response = include(@test_script,options)
+      def vulnerable?
+        response = include(@test_script)
 
         return response.include?(VULN_RESPONSE_STRING)
+      end
+
+      private
+
+      #
+      # Performas an HTTP `GET` request for the given URI.
+      #
+      # @param [URI::HTTP] url
+      #   The URL to request.
+      #
+      # @return [Net::HTTPResponse, #body]
+      #   The response object.
+      #
+      def request(url)
+        if @http
+          @http.get(url)
+        else
+          Net::HTTP.get_response(url)
+        end
       end
 
     end
