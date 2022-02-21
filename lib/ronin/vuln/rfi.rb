@@ -21,6 +21,7 @@
 require 'ronin/support/network/http'
 
 require 'uri/query_params'
+require 'net/https'
 
 module Ronin
   module Vuln
@@ -230,17 +231,11 @@ module Ronin
       # @param [String, URI::HTTP] script
       #   The URL of the PHP script to include remotely.
       #
-      # @param [Hash{Symbol => Object}] kwargs
-      #   Additional keyword arguments for `http_request`.
-      #
       # @return [String]
       #   The body of the response from the RFI.
       #
-      # @see Net.http_post_body
-      # @see Net.http_get_body
-      #
-      def include(script,**kwargs)
-        response = Net.http_request(url: url_for(script), **kwargs)
+      def include(script)
+        response = Net::HTTP.get_response(url_for(script))
 
         return response.body
       end
