@@ -51,7 +51,7 @@ module Ronin
       # URL of the Remote File Inclusion (RFI) Test script
       # 
       # @return [String, URI::HTTP]
-      attr_accessor :test_script
+      attr_reader :test_script
 
       #
       # Creates a new Remote File Inclusion (RFI) object.
