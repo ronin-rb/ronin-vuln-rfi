@@ -168,7 +168,7 @@ module Ronin
         vulns = []
 
         url.query_params.each_key do |param|
-          if (rfi = test(url, param: param, **kwargs)
+          if (rfi = test(url, param: param, **kwargs))
             yield rfi if block_given?
             vulns << rfi
           end
