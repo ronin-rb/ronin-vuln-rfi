@@ -35,12 +35,12 @@ module Ronin
 
       # The url to test or was found to be vulnerable.
       #
-      # @return [String, URI::HTTP]
+      # @return [URI::HTTP]
       attr_reader :url
 
       # The query parameter to test or was found to be vulnerable.
       #
-      # @return [String, Symbol]
+      # @return [String]
       attr_reader :param
 
       # The evasion technique to use.
@@ -74,8 +74,8 @@ module Ronin
       #
       def initialize(url,param, test_script: self.class.test_script,
                                 evasion:     nil)
-        @url   = url
-        @param = param
+        @url   = URI(url)
+        @param = param.to_s
 
         @test_script = test_script
         @evasion     = evasion
@@ -203,7 +203,7 @@ module Ronin
       #
       def url_for(script_url)
         script_url = URI(script_url)
-        new_url    = URI(@url)
+        new_url    = @url.clone
 
         new_url.query_params.merge!(script_url.query_params)
         script_url.query_params.clear
