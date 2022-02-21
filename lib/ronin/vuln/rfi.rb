@@ -72,7 +72,8 @@ module Ronin
       # @param [String, URI::HTTP] test_script
       #   The URL of the RFI test script.
       #
-      def initialize(url,param, test_script: self.test_script, evasion: nil)
+      def initialize(url,param, test_script: self.class.test_script,
+                                evasion:     nil)
         @url   = url
         @param = param
 
