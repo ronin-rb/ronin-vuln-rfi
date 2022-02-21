@@ -198,15 +198,17 @@ module Ronin
       # @param [String, URI::HTTP] script_url
       #   The URL of the PHP script to include remotely.
       #
+      # @param [Hash{String,Symbol => #to_s}] additional_params
+      #   Additional query parameters to add to the RFI URL.
+      #
       # @return [URI::HTTP]
       #   The URL to use to trigger the RFI.
       #
-      def url_for(script_url)
+      def url_for(script_url,additional_params={})
         script_url = URI(script_url)
         new_url    = @url.clone
 
-        new_url.query_params.merge!(script_url.query_params)
-        script_url.query_params.clear
+        new_url.query_params.merge!(additional_params)
 
         case @evasion
         when :null_byte
