@@ -201,7 +201,7 @@ module Ronin
       #
       # Builds a Remote File Inclusion (RFI) URL.
       #
-      # @param [String, URI::HTTP] script_url
+      # @param [String, URI::HTTP] rfi_url
       #   The URL of the PHP script to include remotely.
       #
       # @param [Hash{String,Symbol => #to_s}] additional_params
@@ -210,9 +210,9 @@ module Ronin
       # @return [URI::HTTP]
       #   The URL to use to trigger the RFI.
       #
-      def url_for(script_url,additional_params={})
-        script_url = URI(script_url)
-        new_url    = @url.clone
+      def url_for(rfi_url,additional_params={})
+        rfi_url = URI(rfi_url)
+        new_url = @url.clone
 
         new_url.query_params.merge!(additional_params)
 
@@ -220,13 +220,13 @@ module Ronin
         when :null_byte
           # Optionally append a null-byte
           # NOTE: uri-query_params will automatically URI encode the null byte
-          script_url = "#{script_url}\0"
+          rfi_url = "#{rfi_url}\0"
         when :double_encode
           # Optionally double URI encodes the script URL
-          script_url = URI.encode_www_form_component(script_url.to_s)
+          rfi_url = URI.encode_www_form_component(rfi_url.to_s)
         end
 
-        new_url.query_params[@param.to_s] = script_url
+        new_url.query_params[@param.to_s] = rfi_url
         return new_url
       end
 
