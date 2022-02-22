@@ -239,7 +239,7 @@ module Ronin
       # @return [String]
       #   The body of the response from the RFI.
       #
-      def include(script)
+      def get(script)
         request(url_for(script))
       end
 
@@ -254,7 +254,7 @@ module Ronin
       #   Specifies whether the URL and query parameter are vulnerable to RFI.
       #
       def vulnerable?
-        response = include(@test_script)
+        response = get(@test_script)
 
         return response.include?(VULN_RESPONSE_STRING)
       end
