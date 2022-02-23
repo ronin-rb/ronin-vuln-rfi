@@ -19,9 +19,5 @@ metadata:
 
 required_ruby_version: ">= 2.7.0"
 
-dependencies:
-  # Ronin dependencies:
-  ronin-support: ~> 1.0
-
 development_dependencies:
   bundler: ~> 2.0

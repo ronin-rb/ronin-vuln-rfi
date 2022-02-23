@@ -18,8 +18,6 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'ronin/support/network/http'
-
 require 'uri/query_params'
 require 'net/https'
 

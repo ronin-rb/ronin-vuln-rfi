@@ -43,7 +43,6 @@ Scan a URL for RFI vulnerabilities:
 ## Requirements
 
 * [Ruby] >= 2.7.0
-* [ronin-support] ~> 1.0
 
 ## Install
 
@@ -94,4 +93,3 @@ You should have received a copy of the GNU Lesser General Public License
 along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 
 [Ruby]: https://www.ruby-lang.org
-[ronin-support]: https://github.com/ronin-rb/ronin-support#readme
