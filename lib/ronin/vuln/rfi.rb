@@ -240,7 +240,13 @@ module Ronin
       #   The body of the response from the RFI.
       #
       def get(script)
-        request(url_for(script))
+        url = url_for(script)
+
+        if @http
+          @http.get(url)
+        else
+          Net::HTTP.get(url)
+        end
       end
 
       #
@@ -257,25 +263,6 @@ module Ronin
         response = get(@test_script)
 
         return response.include?(VULN_RESPONSE_STRING)
-      end
-
-      private
-
-      #
-      # Performas an HTTP `GET` request for the given URI.
-      #
-      # @param [URI::HTTP] url
-      #   The URL to request.
-      #
-      # @return [String]
-      #   The response body.
-      #
-      def request(url)
-        if @http
-          @http.get(url)
-        else
-          Net::HTTP.get(url)
-        end
       end
 
     end
