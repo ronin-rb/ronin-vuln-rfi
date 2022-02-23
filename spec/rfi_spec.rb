@@ -142,8 +142,10 @@ describe Ronin::Vuln::RFI do
 
       subject { described_class.new(url,param, http: http) }
 
-      it "must call #get on the http: value" do
-        expect(http).to receive(:get).with(subject.url_for(rfi_url)).and_return(body)
+      it "must call #get on the http: value with the request path+params" do
+        request_uri = subject.url_for(rfi_url).request_uri
+
+        expect(http).to receive(:get).with(request_uri).and_return(body)
 
         expect(subject.get(rfi_url)).to be(body)
       end

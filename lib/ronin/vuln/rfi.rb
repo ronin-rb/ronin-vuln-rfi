@@ -241,7 +241,7 @@ module Ronin
         url = url_for(rfi_url)
 
         if @http
-          @http.get(url)
+          @http.get(url.request_uri)
         else
           Net::HTTP.get(url)
         end
