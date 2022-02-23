@@ -19,5 +19,8 @@ metadata:
 
 required_ruby_version: ">= 2.6.0"
 
+dependencies:
+  uri-query_params: ~> 0.8
+
 development_dependencies:
   bundler: ~> 2.0

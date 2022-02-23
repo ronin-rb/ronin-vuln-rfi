@@ -4,6 +4,9 @@ gemspec
 
 gem 'jruby-openssl',	'~> 0.7', platforms: :jruby
 
+# gem 'uri-query_params', '~> 0.8', github: 'postmodern/uri-query_params',
+#                                   branch: 'main'
+
 group :development do
   gem 'rake'
   gem 'rubygems-tasks', '~> 0.2'

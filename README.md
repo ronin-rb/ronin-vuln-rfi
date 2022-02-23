@@ -43,6 +43,7 @@ Scan a URL for RFI vulnerabilities:
 ## Requirements
 
 * [Ruby] >= 2.6.0
+* [uri-query_params] ~> 0.8
 
 ## Install
 
