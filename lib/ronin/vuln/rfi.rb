@@ -233,14 +233,14 @@ module Ronin
       #
       # Performs a Remote File Inclusion (RFI).
       #
-      # @param [String, URI::HTTP] script
+      # @param [String, URI::HTTP] rfi_url
       #   The URL of the PHP script to include remotely.
       #
       # @return [String]
       #   The body of the response from the RFI.
       #
-      def get(script)
-        url = url_for(script)
+      def get(rfi_url)
+        url = url_for(rfi_url)
 
         if @http
           @http.get(url)
