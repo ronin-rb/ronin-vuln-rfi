@@ -253,9 +253,6 @@ module Ronin
       # Tests whether the URL and query parameter are vulnerable to Remote File
       # Inclusion (RFI).
       #
-      # @param [Hash{Symbol => Object}] kwargs
-      #   Additional keyword arguments for {#include}.
-      #
       # @return [Boolean]
       #   Specifies whether the URL and query parameter are vulnerable to RFI.
       #
