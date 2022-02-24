@@ -209,9 +209,8 @@ module Ronin
       #   The URL to use to trigger the RFI.
       #
       def url_for(rfi_url,additional_params={})
-        rfi_url = URI(rfi_url)
+        rfi_url = rfi_url.to_s
         new_url = @url.clone
-
         new_url.query_params.merge!(additional_params)
 
         case @evasion
@@ -221,7 +220,7 @@ module Ronin
           rfi_url = "#{rfi_url}\0"
         when :double_encode
           # Optionally double URI encodes the script URL
-          rfi_url = URI.encode_www_form_component(rfi_url.to_s)
+          rfi_url = URI::QueryParams.escape(rfi_url)
         end
 
         new_url.query_params[@param.to_s] = rfi_url
