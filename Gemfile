@@ -4,8 +4,9 @@ gemspec
 
 gem 'jruby-openssl',	'~> 0.7', platforms: :jruby
 
-# gem 'uri-query_params', '~> 0.8', github: 'postmodern/uri-query_params',
-#                                   branch: 'main'
+# Ronin depenencies
+gem 'ronin-support',	'~> 1.0', github: "ronin-rb/ronin-support",
+                                branch: '1.0.0'
 
 group :development do
   gem 'rake'
