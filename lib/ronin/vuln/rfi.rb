@@ -26,7 +26,7 @@ module Ronin
     class RFI
 
       # Default URL of the Remote File Inclusion (RFI) Test script.
-      TEST_SCRIPT = 'https://raw.githubusercontent.com/ronin-rb/ronin-vuln-rfi/main/data/test.php'
+      TEST_SCRIPT_URL = 'https://raw.githubusercontent.com/ronin-rb/ronin-vuln-rfi/main/data/test.php'
 
       # The string that will be returned if the Remote File Inclusion (RFI)
       # script is executed.
@@ -50,7 +50,7 @@ module Ronin
       # URL of the Remote File Inclusion (RFI) Test script
       # 
       # @return [String, URI::HTTP]
-      attr_reader :test_script
+      attr_reader :test_script_url
 
       #
       # Creates a new Remote File Inclusion (RFI) object.
@@ -68,19 +68,19 @@ module Ronin
       #   * `:double_encode` will cause the inclusion URL to be URI escaped
       #     twice.
       #
-      # @param [String, URI::HTTP] test_script
+      # @param [String, URI::HTTP] test_script_url
       #   The URL of the RFI test script.
       #
       # @param [Net::HTTP, #get, nil] http
       #   An HTTP session to use for testing the RFI.
       #
-      def initialize(url,param, test_script: self.class.test_script,
-                                evasion:     nil,
-                                http:        nil)
+      def initialize(url,param, test_script_url: self.class.test_script_url,
+                                evasion:         nil,
+                                http:            nil)
         @url   = URI(url)
         @param = param.to_s
 
-        @test_script = test_script
+        @test_script_url = test_script_url
         @evasion     = evasion
         @http        = http
       end
@@ -91,8 +91,8 @@ module Ronin
       # @return [String]
       #   The URL to the RFI testing script.
       #
-      def self.test_script
-        @test_script ||= TEST_SCRIPT
+      def self.test_script_url
+        @test_script_url ||= TEST_SCRIPT_URL
       end
 
       #
@@ -104,8 +104,8 @@ module Ronin
       # @return [String]
       #   The new URL to the RFI testing script.
       #
-      def self.test_script=(new_url)
-        @test_script = new_url
+      def self.test_script_url=(new_url)
+        @test_script_url = new_url
       end
 
       #
@@ -254,7 +254,7 @@ module Ronin
       #   Specifies whether the URL and query parameter are vulnerable to RFI.
       #
       def vulnerable?
-        response = get(@test_script)
+        response = get(@test_script_url)
 
         return response.include?(VULN_RESPONSE_STRING)
       end

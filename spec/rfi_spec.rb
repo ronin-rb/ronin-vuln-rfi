@@ -2,8 +2,8 @@ require 'spec_helper'
 require 'ronin/vuln/rfi'
 
 describe Ronin::Vuln::RFI do
-  describe "TEST_SCRIPT" do
-    subject { described_class::TEST_SCRIPT }
+  describe "TEST_SCRIPT_URL" do
+    subject { described_class::TEST_SCRIPT_URL }
 
     it "must be a publically accessible URL", :network do
       response = Net::HTTP.get_response(URI(subject))
@@ -13,28 +13,28 @@ describe Ronin::Vuln::RFI do
     end
   end
 
-  describe ".test_script" do
+  describe ".test_script_url" do
     subject { described_class }
 
     it "must have a default test_script URL" do
-      expect(subject.test_script).to eq(described_class::TEST_SCRIPT)
+      expect(subject.test_script_url).to eq(described_class::TEST_SCRIPT_URL)
     end
   end
 
-  describe ".test_script=" do
+  describe ".test_script_url=" do
     subject { described_class }
 
     let(:new_url) { 'http://www.example.com/test.php' }
 
     before do
-      subject.test_script = new_url
+      subject.test_script_url = new_url
     end
 
-    it "must set .test_script URL" do
-      expect(subject.test_script).to eq(new_url)
+    it "must set .test_script_url URL" do
+      expect(subject.test_script_url).to eq(new_url)
     end
 
-    after { subject.test_script = described_class::TEST_SCRIPT }
+    after { subject.test_script_url = described_class::TEST_SCRIPT_URL }
   end
 
   let(:param) { 'vuln' }
@@ -67,21 +67,23 @@ describe Ronin::Vuln::RFI do
       end
     end
 
-    it "must default #test_script to TEST_SCRIPT" do
-      expect(subject.test_script).to eq(described_class::TEST_SCRIPT)
+    it "must default #test_script_url to TEST_SCRIPT_URL" do
+      expect(subject.test_script_url).to eq(described_class::TEST_SCRIPT_URL)
     end
 
     it "must default #evasion to nil" do
       expect(subject.evasion).to be(nil)
     end
 
-    context "when given the test_script: keyword argument" do
-      let(:test_script) { 'https://example.com/alternate/test_script.php' }
+    context "when given the test_script_url: keyword argument" do
+      let(:test_script_url) { 'https://example.com/alternate/test_script.php' }
 
-      subject { described_class.new(url,param, test_script: test_script) }
+      subject do
+        described_class.new(url,param, test_script_url: test_script_url)
+      end
 
-      it "must set #test_script" do
-        expect(subject.test_script).to eq(test_script)
+      it "must set #test_script_url" do
+        expect(subject.test_script_url).to eq(test_script_url)
       end
     end
 
@@ -169,8 +171,8 @@ describe Ronin::Vuln::RFI do
       HTML
     end
 
-    it "must call #get with the #test_script" do
-      expect(subject).to receive(:get).with(subject.test_script).and_return(body)
+    it "must call #get with the #test_script_url" do
+      expect(subject).to receive(:get).with(subject.test_script_url).and_return(body)
 
       subject.vulnerable?
     end
@@ -189,7 +191,7 @@ describe Ronin::Vuln::RFI do
       end
 
       before do
-        expect(subject).to receive(:get).with(subject.test_script).and_return(body)
+        expect(subject).to receive(:get).with(subject.test_script_url).and_return(body)
       end
 
       it "must return true" do
@@ -199,7 +201,7 @@ describe Ronin::Vuln::RFI do
 
     context "when the response body does not contain 'Remote File Inclusion (RFI) Detected: eval(\"1 + 1\") = 2'" do
       before do
-        expect(subject).to receive(:get).with(subject.test_script).and_return(body)
+        expect(subject).to receive(:get).with(subject.test_script_url).and_return(body)
       end
 
       it "must return false" do
