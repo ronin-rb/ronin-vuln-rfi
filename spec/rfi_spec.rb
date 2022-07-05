@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'ronin/vuln/rfi'
 
+require 'webmock/rspec'
+
 describe Ronin::Vuln::RFI do
   describe "TEST_SCRIPT_URL" do
     subject { described_class::TEST_SCRIPT_URL }
@@ -134,32 +136,22 @@ describe Ronin::Vuln::RFI do
     end
   end
 
-  describe "#get" do
-    let(:body) { double(:response_body) }
+  describe "#include_url" do
+    let(:response_body) { "<html><body>test body</body></html>" }
+    let(:request_url)   { subject.url_for(rfi_url) }
 
     it "must call Net::HTTP.get with #url_for" do
-      expect(Net::HTTP).to receive(:get).with(subject.url_for(rfi_url)).and_return(body)
+      stub_request(:get,request_url).to_return(body: response_body)
 
-      expect(subject.get(rfi_url)).to be(body)
-    end
+      expect(subject.include_url(rfi_url)).to eq(response_body)
 
-    context "when initialized with the http: keyword argument" do
-      let(:http) { double(:http) }
-
-      subject { described_class.new(url,param, http: http) }
-
-      it "must call #get on the http: value with the request path+params" do
-        request_uri = subject.url_for(rfi_url).request_uri
-
-        expect(http).to receive(:get).with(request_uri).and_return(body)
-
-        expect(subject.get(rfi_url)).to be(body)
-      end
+      expect(WebMock).to have_requested(:get,request_url)
     end
   end
 
   describe "#vulnerable?" do
-    let(:body) do
+    let(:request_url) { subject.url_for(subject.test_script_url) }
+    let(:response_body) do
       <<~HTML
         <html>
           <body>
@@ -171,14 +163,16 @@ describe Ronin::Vuln::RFI do
       HTML
     end
 
-    it "must call #get with the #test_script_url" do
-      expect(subject).to receive(:get).with(subject.test_script_url).and_return(body)
+    it "must make a GET request with #test_script_url included into #url" do
+      stub_request(:get,request_url).to_return(body: response_body)
 
       subject.vulnerable?
+
+      expect(WebMock).to have_requested(:get,request_url)
     end
 
     context "when the response body contains 'Remote File Inclusion (RFI) Detected: eval(\"1 + 1\") = 2'" do
-      let(:body) do
+      let(:response_body) do
         <<~HTML
           <html>
             <body>
@@ -190,21 +184,17 @@ describe Ronin::Vuln::RFI do
         HTML
       end
 
-      before do
-        expect(subject).to receive(:get).with(subject.test_script_url).and_return(body)
-      end
-
       it "must return true" do
+        stub_request(:get,request_url).to_return(body: response_body)
+
         expect(subject.vulnerable?).to be(true)
       end
     end
 
     context "when the response body does not contain 'Remote File Inclusion (RFI) Detected: eval(\"1 + 1\") = 2'" do
-      before do
-        expect(subject).to receive(:get).with(subject.test_script_url).and_return(body)
-      end
-
       it "must return false" do
+        stub_request(:get,request_url).to_return(body: response_body)
+
         expect(subject.vulnerable?).to be(false)
       end
     end
