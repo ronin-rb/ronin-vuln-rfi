@@ -74,15 +74,27 @@ module Ronin
       # @param [Ronin::Support::Network::HTTP, nil] http
       #   An optional HTTP session to use for testing the RFI.
       #
+      # @param [Symbol] method
+      #   The HTTP request method to use.
+      #
+      # @param [Hash{String => Object}, nil] headers
+      #   Additional headers to send with any HTTP request.
+      #
       def initialize(url,param, test_script_url: self.class.test_script_url,
                                 evasion:         nil,
-                                http:            nil)
+                                # http keyword arguments
+                                http:    nil,
+                                method:  :get,
+                                headers: nil)
         @url   = URI(url)
         @param = param.to_s
 
         @test_script_url = test_script_url
         @evasion     = evasion
-        @http        = http || Support::Network::HTTP.connect_uri(@url)
+
+        @http    = http || Support::Network::HTTP.connect_uri(@url)
+        @method  = method
+        @headers = headers
       end
 
       #
@@ -248,14 +260,10 @@ module Ronin
       # @return [String]
       #   The body of the response from the RFI.
       #
-      def get(rfi_url)
+      def include_url(rfi_url)
         url = url_for(rfi_url)
 
-        if @http
-          @http.get(url.request_uri)
-        else
-          Net::HTTP.get(url)
-        end
+        @http.response_body(@method, url.request_uri, headers: @headers)
       end
 
       #
@@ -266,7 +274,7 @@ module Ronin
       #   Specifies whether the URL and query parameter are vulnerable to RFI.
       #
       def vulnerable?
-        response = get(@test_script_url)
+        response = include_url(@test_script_url)
 
         return response.include?(VULN_RESPONSE_STRING)
       end
