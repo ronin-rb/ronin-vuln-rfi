@@ -112,11 +112,10 @@ module Ronin
       # Scans the URL for Remote File Inclusion (RFI) vulnerabilities.
       #
       # @param [URI::HTTP, String] url
-      #   The URL to scan.
+      #   The URL to test.
       #
-      # @param [String, Symbol, nil] param
-      #   Optional query parameter to test specifically.
-      #   Defaults to testing all query parameters in the URL.
+      # @param [String, Symbol] param
+      #   The query parameter to test.
       #
       # @param [nil, :null_byte, :double_encode] evasion
       #   Optional evasion technic to specifically use.
@@ -128,23 +127,17 @@ module Ronin
       # @return [RFI, nil]
       #   The first discovered RFI vulnerability.
       #
-      def self.test(url, param: nil, evasion: nil, **kwargs)
+      def self.test_query_param(url,param, evasion: nil, **kwargs)
         url = URI(url)
-
-        params = if param then [param.to_s]
-                 else          url.query_params.key
-                 end
 
         evasions = if evasion then [evasion]
                    else            [nil, :null_byte, :double_encode]
                    end
 
         evasions.each do |evasion|
-          params.each do |param|
-            rfi = self.new(url,param, evasion: evasion, **kwargs)
+          rfi = self.new(url,param, evasion: evasion, **kwargs)
 
-            return rfi if rfi.vulnerable?
-          end
+          return rfi if rfi.vulnerable?
         end
 
         return nil
@@ -153,6 +146,9 @@ module Ronin
       #
       # Tests all query parameters in the URL for Remote File Inclusion (RFI)
       # vulnerabilities.
+      #
+      # @param [URI::HTTP, String] url
+      #   The URL to scan.
       #
       # @param [Hash{Symbol => Object}] kwargs
       #   Additional keyword arguments for {test}.
@@ -168,18 +164,33 @@ module Ronin
       # @return [Array<RFI>]
       #   All discovered RFI vulnerabilities.
       #
-      def self.scan(url, **kwargs)
+      def self.scan(url,**kwargs)
         url   = URI(url)
         vulns = []
 
         url.query_params.each_key do |param|
-          if (rfi = test(url, param: param, **kwargs))
+          if (rfi = test_query_param(url,param,**kwargs))
             yield rfi if block_given?
             vulns << rfi
           end
         end
 
         return vulns
+      end
+
+      #
+      # Tests the URL for Remote File Inclusion (RFI).
+      #
+      # @param [URI::HTTP, String] url
+      #   The URL to test.
+      #
+      # @return [RFI, nil]
+      #   The first discovered RFI vulnerability.
+      #
+      def self.test(url,**kwargs)
+        scan(url,**kwargs) do |rfi|
+          return rfi
+        end
       end
 
       #
