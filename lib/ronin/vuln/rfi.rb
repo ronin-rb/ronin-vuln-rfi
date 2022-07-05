@@ -18,8 +18,8 @@
 # along with ronin-vuln-rfi.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+require 'ronin/support/network/http'
 require 'uri/query_params'
-require 'net/https'
 
 module Ronin
   module Vuln
@@ -71,8 +71,8 @@ module Ronin
       # @param [String, URI::HTTP] test_script_url
       #   The URL of the RFI test script.
       #
-      # @param [Net::HTTP, #get, nil] http
-      #   An HTTP session to use for testing the RFI.
+      # @param [Ronin::Support::Network::HTTP, nil] http
+      #   An optional HTTP session to use for testing the RFI.
       #
       def initialize(url,param, test_script_url: self.class.test_script_url,
                                 evasion:         nil,
@@ -82,7 +82,7 @@ module Ronin
 
         @test_script_url = test_script_url
         @evasion     = evasion
-        @http        = http
+        @http        = http || Support::Network::HTTP.connect_uri(@url)
       end
 
       #
@@ -117,6 +117,9 @@ module Ronin
       # @param [String, Symbol] param
       #   The query parameter to test.
       #
+      # @param [Ronin::Support::Network::HTTP, nil] http
+      #   An optional HTTP session to use for testing the RFI.
+      #
       # @param [nil, :null_byte, :double_encode] evasion
       #   Optional evasion technic to specifically use.
       #   Defaults to testing all evasion techniques.
@@ -127,15 +130,17 @@ module Ronin
       # @return [RFI, nil]
       #   The first discovered RFI vulnerability.
       #
-      def self.test_query_param(url,param, evasion: nil, **kwargs)
-        url = URI(url)
+      def self.test_query_param(url,param, http: nil, evasion: nil, **kwargs)
+        url    = URI(url)
+        http ||= Support::Network::HTTP.connect_uri(url)
+
 
         evasions = if evasion then [evasion]
                    else            [nil, :null_byte, :double_encode]
                    end
 
         evasions.each do |evasion|
-          rfi = self.new(url,param, evasion: evasion, **kwargs)
+          rfi = self.new(url,param, http: http, evasion: evasion, **kwargs)
 
           return rfi if rfi.vulnerable?
         end
@@ -150,8 +155,11 @@ module Ronin
       # @param [URI::HTTP, String] url
       #   The URL to scan.
       #
+      # @param kwargs [Ronin::Support::Network::HTTP, nil] http
+      #   An optional HTTP session to use for testing the RFI.
+      #
       # @param [Hash{Symbol => Object}] kwargs
-      #   Additional keyword arguments for {test}.
+      #   Additional keyword arguments for {test_query_param}.
       #
       # @yield [rfi]
       #   If a block is given, it will be passed each newly discovered RFI
@@ -164,12 +172,13 @@ module Ronin
       # @return [Array<RFI>]
       #   All discovered RFI vulnerabilities.
       #
-      def self.scan(url,**kwargs)
-        url   = URI(url)
+      def self.scan(url, http: nil, **kwargs)
+        url    = URI(url)
+        http ||= Support::Network::HTTP.connect_uri(url)
         vulns = []
 
         url.query_params.each_key do |param|
-          if (rfi = test_query_param(url,param,**kwargs))
+          if (rfi = test_query_param(url,param, http: http, **kwargs))
             yield rfi if block_given?
             vulns << rfi
           end
@@ -180,6 +189,12 @@ module Ronin
 
       #
       # Tests the URL for Remote File Inclusion (RFI).
+      #
+      # @param [Hash{Symbol => Object}] kwargs
+      #   Additional keyword arguments for {scan}.
+      #
+      # @option kwargs [Ronin::Support::Network::HTTP, nil] http
+      #   An optional HTTP session to use for testing the RFI.
       #
       # @param [URI::HTTP, String] url
       #   The URL to test.
