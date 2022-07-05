@@ -22,23 +22,21 @@ vulnerabilities
 
 ## Examples
 
-Test for Remote File Inclusion (RFI):
+Test a URL for Remote File Inclusion (RFI):
 
-    require 'ronin/php/rfi'
+```ruby
+require 'ronin/vuln/rfi'
 
-    url = URI('http://www.example.com/page.php?lang=en')
-    url.has_rfi?
-    # => true
+vuln = Ronin::Vuln::RFI.test('http://www.example.com/page.php?lang=en')
+# => #<Ronin::Vuln::RFI: ...>
+```
 
-Get the first viable RFI vulnerability:
+Finds all Remote File Inclusion (RFI) vulnerabilities for a given URL:
 
-    url.first_rfi
-    # => #<Ronin::PHP::RFI: ...>
-
-Scan a URL for RFI vulnerabilities:
-
-    url.rfi_scan
-    # => [#<Ronin::PHP::RFI: ...>, ...]
+```ruby
+vulns = Ronin::Vuln::RFI.scan('http://www.example.com/page.php?lang=en')
+# => [#<Ronin::Vuln::RFI: ...>, ...]
+```
 
 ## Requirements
 
