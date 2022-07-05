@@ -263,7 +263,8 @@ module Ronin
       def include_url(rfi_url)
         url = url_for(rfi_url)
 
-        @http.response_body(@method, url.request_uri, headers: @headers)
+        @http.response_body(@method, url.path, query:   url.query,
+                                               headers: @headers)
       end
 
       #
